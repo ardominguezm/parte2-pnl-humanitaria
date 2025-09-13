@@ -1,72 +1,38 @@
-import os
-import zipfile
-import re
+import gradio as gr
 import pandas as pd
-import spacy
 from PyPDF2 import PdfReader
-import streamlit as st
-import subprocess
+import zipfile, os, re
+import spacy
 
+# ================================
+# Cargar spaCy (modelo español)
+# ================================
 try:
-    import spacy
-    spacy.load("es_core_news_sm")
-    st.success("✅ Modelo spaCy cargado correctamente.")
-except Exception as e:
-    st.error(f"❌ Error cargando spaCy: {e}")
-
-
-# ================================
-# Cargar modelo spaCy (se instala si no existe)
-# ================================
-
-@st.cache_resource
-def load_spacy_model():
-    return spacy.load("es_core_news_sm")
-
-nlp = load_spacy_model()
-
+    nlp = spacy.load("es_core_news_sm")
+except OSError:
+    import subprocess
+    subprocess.run(["python", "-m", "spacy", "download", "es_core_news_sm"])
+    nlp = spacy.load("es_core_news_sm")
 
 # ================================
-# Leer PDFs (incluye subcarpetas)
-# ================================
-def read_reports(path="data"):
-    reports = {}
-    for root, dirs, files in os.walk(path):
-        for fname in files:
-            if fname.endswith(".pdf"):
-                fpath = os.path.join(root, fname)
-                pdf = PdfReader(fpath)
-                text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
-                reports[fname] = text
-    return reports
-
-# ================================
-# Extraer información
+# Función de extracción
 # ================================
 def extraer_info_pregunta1(text, nombre_reporte="reporte.pdf"):
     doc = nlp(text)
 
     # Ubicaciones
     ubicaciones = [ent.text.strip() for ent in doc.ents if ent.label_ in ["LOC", "GPE"]]
-    ubicaciones_limpias = []
-    for loc in ubicaciones:
-        loc = re.sub(r"\n", " ", loc)
-        loc = re.sub(r"([a-z])([A-Z])", r"\1, \2", loc)
-        ubicaciones_limpias.extend([l.strip() for l in loc.split(",") if len(l.strip()) > 2])
-    ubicaciones_final = list(set(ubicaciones_limpias))
+    ubicaciones_final = list(set([re.sub(r"\n", " ", u) for u in ubicaciones]))
 
     # Fechas
     regex_patterns = [
-        r"\b\d{1,2}\s+de\s+(?:enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+\d{4}\b",
-        r"\b(?:enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+\d{4}\b",
-        r"\b(?:enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s*[-–]\s*(?:enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+\d{4}\b",
+        r"\b\d{1,2}\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+\d{4}\b",
+        r"\b(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+\d{4}\b",
         r"\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b"
     ]
-    fechas_regex = []
+    fechas_final = []
     for pattern in regex_patterns:
-        matches = re.findall(pattern, text, flags=re.IGNORECASE)
-        fechas_regex.extend(matches)
-    fechas_final = list(set(fechas_regex))
+        fechas_final.extend(re.findall(pattern, text, flags=re.IGNORECASE))
 
     # Tipos de incidente
     keywords_incidentes = {
@@ -77,52 +43,53 @@ def extraer_info_pregunta1(text, nombre_reporte="reporte.pdf"):
     }
     tipos_detectados = []
     for tipo, palabras in keywords_incidentes.items():
-        if any(palabra.lower() in text.lower() for palabra in palabras):
+        if any(p in text.lower() for p in palabras):
             tipos_detectados.append(tipo)
 
     return {
         "Reporte": nombre_reporte,
-        "Ubicaciones": ", ".join(ubicaciones_final[:15]) if ubicaciones_final else "No detectadas",
-        "Fechas": ", ".join(fechas_final) if fechas_final else "No detectadas",
+        "Ubicaciones": ", ".join(ubicaciones_final) if ubicaciones_final else "No detectadas",
+        "Fechas": ", ".join(set(fechas_final)) if fechas_final else "No detectadas",
         "Tipos de incidente": ", ".join(tipos_detectados) if tipos_detectados else "No detectados"
     }
 
 # ================================
-# Interfaz Streamlit
+# Procesar PDFs o ZIP
 # ================================
-st.title("📑 Analizador de Reportes Humanitarios")
-st.write("Sube tus reportes en PDF o un archivo ZIP, y obtén un resumen automático con ubicaciones, fechas y tipos de incidentes.")
-
-uploaded_file = st.file_uploader("Subir archivo", type=["pdf", "zip"])
-
-if uploaded_file:
-    os.makedirs("data", exist_ok=True)
-
-    # Guardar archivo subido
-    with open(os.path.join("data", uploaded_file.name), "wb") as f:
-        f.write(uploaded_file.getbuffer())
-
-    # Descomprimir si es ZIP
-    if uploaded_file.name.endswith(".zip"):
-        with zipfile.ZipFile(os.path.join("data", uploaded_file.name), 'r') as zip_ref:
-            zip_ref.extractall("data")
-
-    # Procesar reportes
-    reports = read_reports("data")
+def analizar_reportes(file):
     resultados = []
-    for fname, contenido in reports.items():
-        resultados.append(extraer_info_pregunta1(contenido, nombre_reporte=fname))
 
-    # Mostrar tabla
-    df_resultados = pd.DataFrame(resultados)
-    st.subheader("📊 Resultados extraídos")
-    st.dataframe(df_resultados)
+    # ZIP
+    if file.name.endswith(".zip"):
+        with zipfile.ZipFile(file.name, 'r') as zip_ref:
+            zip_ref.extractall("tmp")
+        for fname in os.listdir("tmp"):
+            if fname.endswith(".pdf"):
+                pdf = PdfReader(os.path.join("tmp", fname))
+                text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+                resultados.append(extraer_info_pregunta1(text, nombre_reporte=fname))
+    else:
+        pdf = PdfReader(file.name)
+        text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+        resultados.append(extraer_info_pregunta1(text, nombre_reporte=os.path.basename(file.name)))
 
-    # Botón de descarga
-    csv = df_resultados.to_csv(index=False).encode("utf-8")
-    st.download_button("📥 Descargar CSV", csv, "resultados_reportes.csv", "text/csv")
+    df = pd.DataFrame(resultados)
+    csv_path = "resultados.csv"
+    df.to_csv(csv_path, index=False)
+    return df, csv_path
 
-    # Resumen en lenguaje natural
-    st.subheader("📝 Resumen automático")
-    resumen = f"Se identificaron incidentes de {', '.join(set(', '.join(df_resultados['Tipos de incidente']).split(', ')))} en ubicaciones como {', '.join(df_resultados['Ubicaciones'].head(5))}. Los reportes incluyen fechas como {', '.join(df_resultados['Fechas'].head(3))}."
-    st.write(resumen)
+# ================================
+# Interfaz Gradio
+# ================================
+iface = gr.Interface(
+    fn=analizar_reportes,
+    inputs=gr.File(type="file", label="Sube un PDF o ZIP"),
+    outputs=[
+        gr.Dataframe(headers=["Reporte", "Ubicaciones", "Fechas", "Tipos de incidente"], label="Resultados"),
+        gr.File(label="📥 Descargar CSV")
+    ],
+    title="📑 Analizador de Reportes Humanitarios",
+    description="Sube tus reportes en PDF o ZIP y obtén una tabla con Ubicaciones, Fechas y Tipos de incidente."
+)
+
+iface.launch()
