@@ -25,7 +25,7 @@ La solución está desarrollada en **Python + spaCy + Gradio** y se puede ejecut
 
 ## 🚀 Demo en Hugging Face
 
-👉 [Ver aplicación en Hugging Face Spaces](https://huggingface.co/spaces/ardominguezm/parte2-pnl-humanitaria)  
+👉 [Ver aplicación en Hugging Face Spaces]([https://huggingface.co/spaces/ardominguezm/parte2-pnl-humanitaria](https://huggingface.co/spaces/ardominguezm/part2-test))  
 
 Sube un **PDF** individual o un **ZIP con múltiples PDFs** y obtén:
 
