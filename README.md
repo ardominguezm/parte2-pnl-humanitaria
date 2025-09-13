@@ -13,16 +13,30 @@ Se incluyen dos formas de uso:
 
 ---
 
-## 🚀 1. Aplicación en Streamlit Cloud
+# 📑 Analizador de Reportes Humanitarios (Gradio + HF Spaces)
 
-La app permite a cualquier usuario subir reportes en PDF o ZIP y obtener:
+Este demo permite a usuarios no técnicos subir reportes en PDF o ZIP y obtener automáticamente:
 
-- Una tabla interactiva con resultados.
-- Descarga de CSV.
-- Un resumen en lenguaje natural listo para compartir.
+- 📍 Ubicaciones
+- 📅 Fechas
+- ⚠️ Tipos de incidente
+- 📊 Exportación a CSV
 
-🔗 **Acceso a la app (Streamlit Cloud):**  
-👉 [https://share.streamlit.io/](https://share.streamlit.io/) *(al desplegar tu app se generará aquí el link con tu usuario/repositorio)*
+---
+
+## 🚀 Cómo usar
+
+1. Ve a Hugging Face → [https://huggingface.co/spaces](https://huggingface.co/spaces)  
+2. Crea un nuevo **Space** → selecciona **Gradio** como framework.  
+3. Sube los archivos:
+   - `app_gradio.py`
+   - `requirements.txt`
+   - (opcional) `README.md`
+4. Haz clic en **Deploy**.
+
+En pocos minutos tendrás tu app online en un link tipo:
+
+
 
 ### Ejemplo de salida
 | Reporte                                     | Ubicaciones                       | Fechas                       | Tipos de incidente                       |
