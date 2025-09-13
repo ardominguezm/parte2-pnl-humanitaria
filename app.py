@@ -7,6 +7,12 @@ from PyPDF2 import PdfReader
 import streamlit as st
 import subprocess
 
+try:
+    spacy.load("es_core_news_sm")
+    st.success("✅ Modelo spaCy cargado correctamente.")
+except Exception as e:
+    st.error(f"❌ Error cargando spaCy: {e}")
+
 # ================================
 # Cargar modelo spaCy (se instala si no existe)
 # ================================
