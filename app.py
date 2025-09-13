@@ -8,14 +8,17 @@ import streamlit as st
 import subprocess
 
 try:
+    import spacy
     spacy.load("es_core_news_sm")
     st.success("✅ Modelo spaCy cargado correctamente.")
 except Exception as e:
     st.error(f"❌ Error cargando spaCy: {e}")
 
+
 # ================================
 # Cargar modelo spaCy (se instala si no existe)
 # ================================
+
 @st.cache_resource
 def load_spacy_model():
     return spacy.load("es_core_news_sm")
