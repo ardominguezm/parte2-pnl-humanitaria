@@ -1,5 +1,7 @@
 # 📑 Parte 2 – Procesamiento de Lenguaje Natural en Reportes Humanitarios
 
+Realizada por: Andy Domínguez(ardominguezm@gmail.com)
+
 Este proyecto implementa una aplicación interactiva que procesa **reportes humanitarios en PDF o ZIP** para extraer información clave y presentarla en un formato accesible para **actores no técnicos**.
 
 La solución está desarrollada en **Python + spaCy + Gradio** y se puede ejecutar tanto de manera local como en la nube mediante **Hugging Face Spaces**.
