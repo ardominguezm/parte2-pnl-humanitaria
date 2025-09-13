@@ -1,6 +1,6 @@
-streamlit==1.37.0
-spacy==3.7.2
-pandas==2.2.2
-PyPDF2==3.0.1
-# modelo spaCy español
+gradio
+pandas
+PyPDF2
+spacy
+# Modelo español de spaCy
 https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl
