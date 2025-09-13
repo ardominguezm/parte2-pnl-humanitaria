@@ -1,51 +1,59 @@
-# 📑 Parte 2 – Prueba Técnica de PLN Humanitaria
+# 📑 Parte 2 – Procesamiento de Lenguaje Natural en Reportes Humanitarios
 
-Este repositorio contiene el desarrollo de la **parte 2 de la prueba técnica**, en la cual se procesan reportes humanitarios en PDF/ZIP para **extraer automáticamente**:
+Este proyecto implementa una aplicación interactiva que procesa **reportes humanitarios en PDF o ZIP** para extraer información clave y presentarla en un formato accesible para **actores no técnicos**.
 
-- 📍 **Ubicaciones**
-- 📅 **Fechas**
-- ⚠️ **Tipos de incidentes**
-
-Se incluyen dos formas de uso:
-
-1. Una **aplicación web en Streamlit** (para usuarios no técnicos).  
-2. Un **script demo (`demo-ready.py`) con outputs reproducibles** (para revisión técnica).
+La solución está desarrollada en **Python + spaCy + Gradio** y se puede ejecutar tanto de manera local como en la nube mediante **Hugging Face Spaces**.
 
 ---
 
-# 📑 Analizador de Reportes Humanitarios (Gradio + HF Spaces)
+## 🎯 Objetivos del entregable
 
-Este demo permite a usuarios no técnicos subir reportes en PDF o ZIP y obtener automáticamente:
+1. **Extraer automáticamente** de cada reporte:
+   - 📍 Ubicaciones
+   - 📅 Fechas
+   - ⚠️ Tipos de incidente
 
-- 📍 Ubicaciones
-- 📅 Fechas
-- ⚠️ Tipos de incidente
-- 📊 Exportación a CSV
+2. **Clasificar incidentes** en categorías predefinidas:
+   - Desplazamiento  
+   - Seguridad alimentaria  
+   - Salud  
+   - Protección  
+
+3. **Generar un resumen automatizado** en lenguaje sencillo, listo para compartir con actores no técnicos.
+
+---
+
+## 🚀 Demo en Hugging Face
+
+👉 [Ver aplicación en Hugging Face Spaces](https://huggingface.co/spaces/ardominguezm/parte2-pnl-humanitaria)  
+
+Sube un **PDF** individual o un **ZIP con múltiples PDFs** y obtén:
+
+- Un **resumen ejecutivo** en lenguaje claro.  
+- Una **tabla detallada** con la información estructurada.  
 
 ---
 
-## 🚀 Cómo usar
+## 🛠 Uso local
 
-1. Ve a Hugging Face → [https://huggingface.co/spaces](https://huggingface.co/spaces)  
-2. Crea un nuevo **Space** → selecciona **Gradio** como framework.  
-3. Sube los archivos:
-   - `app_gradio.py`
-   - `requirements.txt`
-   - (opcional) `README.md`
-4. Haz clic en **Deploy**.
-
-En pocos minutos tendrás tu app online en un link tipo:
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/ardominguezm/parte2-pnl-humanitaria.git
+cd parte2-pnl-humanitaria
 
 
 
-### Ejemplo de salida
-| Reporte                                     | Ubicaciones                       | Fechas                       | Tipos de incidente                       |
-|---------------------------------------------|-----------------------------------|-------------------------------|------------------------------------------|
-| Acceso Hum. Cauca_Guaviare. 12.08.pdf        | Corinto, Miraflores, Argelia...   | 11 de agosto 2025, agosto 2025 | Inundación, Desplazamiento, Seguridad    |
-| SitRep Emergencia por Inundaciones Amazonia | Cubarral, Miraflores, Colombia... | 21/02/2020, 29/07/2025        | Inundación, Desplazamiento, Salud, Seguridad |
-| _BriefingHumanitario_La Guajira...           | La Guajira, Comité Departamental… | junio 2025                    | Inundación, Desplazamiento, Salud, Seguridad |
 
 ---
+
+📑 Reporte: _BriefingHumanitario_La Guajira_Enero-Junio2025.pdf
+📍 Ubicaciones afectadas: La Guajira, Maicao, Uribia, Riohacha, Manaure, Barrancas
+📅 Fechas relevantes: 5 de mayo de 2025, mayo de 2025, semestre de 2025
+⚠️ Categorías de incidente: Desplazamiento, Seguridad alimentaria, Salud, Protección
+
+En este reporte se identifican las ubicaciones más afectadas, el marco temporal y las principales categorías de incidente
+para orientar la toma de decisiones de actores humanitarios no técnicos.
+
 
 ## 🖥️ 2. Script demo (`demo-ready.py`)
 
@@ -62,4 +70,13 @@ python -m spacy download es_core_news_sm
 
 # Ejecutar el demo
 python demo-ready.py
+
+### Ejemplo de salida
+| Reporte                                     | Ubicaciones                       | Fechas                       | Tipos de incidente                       |
+|---------------------------------------------|-----------------------------------|-------------------------------|------------------------------------------|
+| Acceso Hum. Cauca_Guaviare. 12.08.pdf        | Corinto, Miraflores, Argelia...   | 11 de agosto 2025, agosto 2025 | Inundación, Desplazamiento, Seguridad    |
+| SitRep Emergencia por Inundaciones Amazonia | Cubarral, Miraflores, Colombia... | 21/02/2020, 29/07/2025        | Inundación, Desplazamiento, Salud, Seguridad |
+| _BriefingHumanitario_La Guajira...           | La Guajira, Comité Departamental… | junio 2025                    | Inundación, Desplazamiento, Salud, Seguridad |
+
+
 
