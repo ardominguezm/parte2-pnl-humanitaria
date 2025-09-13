@@ -33,6 +33,13 @@ Sube un **PDF** individual o un **ZIP con múltiples PDFs** y obtén:
 - Una **tabla detallada** con la información estructurada.  
 
 ---
+📑 Reporte: _BriefingHumanitario_La Guajira_Enero-Junio2025.pdf
+📍 Ubicaciones afectadas: La Guajira, Maicao, Uribia, Riohacha, Manaure, Barrancas
+📅 Fechas relevantes: 5 de mayo de 2025, mayo de 2025, semestre de 2025
+⚠️ Categorías de incidente: Desplazamiento, Seguridad alimentaria, Salud, Protección
+
+En este reporte se identifican las ubicaciones más afectadas, el marco temporal y las principales categorías de incidente
+para orientar la toma de decisiones de actores humanitarios no técnicos.
 
 ## 🛠 Uso local
 
