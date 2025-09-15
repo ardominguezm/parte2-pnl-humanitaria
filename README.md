@@ -43,11 +43,8 @@ Sube un **PDF** individual o un **ZIP con múltiples PDFs** y obtén:
 git clone https://github.com/ardominguezm/parte2-pnl-humanitaria.git
 cd parte2-pnl-humanitaria
 
-
-
-
 ---
-
+Ejemplo:
 📑 Reporte: _BriefingHumanitario_La Guajira_Enero-Junio2025.pdf
 📍 Ubicaciones afectadas: La Guajira, Maicao, Uribia, Riohacha, Manaure, Barrancas
 📅 Fechas relevantes: 5 de mayo de 2025, mayo de 2025, semestre de 2025
